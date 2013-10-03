@@ -144,12 +144,14 @@ class CourseSync:
                         file_request = self.cl_session.get (file_link.get('href'))
                         content_disposition = file_request.headers['content-disposition'].split('=')[1].strip('"')
                         filename = os.path.join (os.getcwd(), content_disposition)
-                        fd = open (filename, "wb")
-                        for block in file_request.iter_content(1024):
-                            if not block:
-                                break
-                            fd.write(block)
-                        print (content_disposition)
+                        if not os.path.isfile (filename):
+                            fd = open (filename, "wb")
+                            for block in file_request.iter_content(1024):
+                                if not block:
+                                    break
+                                fd.write(block)
+                            fd.close()
+                            print (content_disposition)
         self.safe_chdir (DIR_PATH)
 
 if __name__ == '__main__':
