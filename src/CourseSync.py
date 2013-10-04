@@ -9,7 +9,7 @@
 import requests
 import os
 import sys
-from optparse import OptionParser
+import argparse
 from bs4 import BeautifulSoup
 from collections import defaultdict
 
@@ -20,24 +20,38 @@ DIR_PATH  = os.path.join(USER_DIR, CONF_DIR)
 CONF_PATH = os.path.join(DIR_PATH, CONF_FILE)
 
 def main():
-    parser = OptionParser()
+    parser = argparse.ArgumentParser()
     configure_opt_parser (parser)
-    (options, args) = parser.parse_args()
-    print (options)
+    args = parser.parse_args()
     print (args)
-    CourseSync()
+    if args.view_logs is True:
+        sys.exit (0)
+    elif args.add_courses is True:
+        CourseSync (action="add_courses")
+    elif args.delete_courses is True:
+        pass
+    elif args.reset is True:
+        pass
+    CourseSync(action="Sync")
 
 def configure_opt_parser (parser):
-    parser.add_option("-a", "--add-courses", action="store_true")
-    parser.add_option("-d", "--delete-courses", action="store_true")
-    parser.add_option("-r", "--reset", action="store_true")
-    parser.add_option("-S", "--sync", action="store_true")
-    parser.add_option("-v", "--verbose", action="store_true")
-    parser.add_option("-l", "--view-logs", action="store_true")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-a", "--add-courses", action="store_true", help="Add courses to your Course List")
+    group.add_argument("-d", "--delete-courses", action="store_true", help="Remove courses from your Course List")
+    group.add_argument("-r", "--reset", action="store_true", help="Delete your Course List file and start a new one. Helpful when starting a new semester")
+    parser.add_argument("-S", "--sync", action="store_true", help="Sync your machine with the CMS Servers")
+    parser.add_argument("-v", "--verbosity", choices=["q", "v", "d"], default="q", help="Change verbosity of script output")
+    parser.add_argument("-l", "--view-logs", action="store_true", help="View the contents of your Log File")
 
 
 class CourseSync:
-    def __init__(self):
+    def __init__(self, action="sync"):
+        try:
+            getattr (self, action) ()
+        except Exception:
+            print ("===Error=== Method %s is not defined" %(action))
+
+    def Sync (self):
         self.cl_session = requests.Session()
         user_courses = self.get_course_list()
         cl_obj = self.guest_login()
@@ -156,4 +170,4 @@ class CourseSync:
 
 if __name__ == '__main__':
     main()
-# vim: set ts=4 sts=4 sw=4 tw=80 et :
+# vim: set ts=4 sts=4 sw=4 tw=300 et :
