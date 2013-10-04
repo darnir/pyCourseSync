@@ -20,20 +20,20 @@ DIR_PATH  = os.path.join(USER_DIR, CONF_DIR)
 CONF_PATH = os.path.join(DIR_PATH, CONF_FILE)
 
 def main():
-    parse_cmd_options ()
+    parser = OptionParser()
+    configure_opt_parser (parser)
+    (options, args) = parser.parse_args()
+    print (options)
+    print (args)
     CourseSync()
 
-def parse_cmd_options ():
-    parser = OptionParser()
+def configure_opt_parser (parser):
     parser.add_option("-a", "--add-courses", action="store_true")
     parser.add_option("-d", "--delete-courses", action="store_true")
     parser.add_option("-r", "--reset", action="store_true")
     parser.add_option("-S", "--sync", action="store_true")
     parser.add_option("-v", "--verbose", action="store_true")
     parser.add_option("-l", "--view-logs", action="store_true")
-    (options, args) = parser.parse_args()
-    print (options)
-    print (args)
 
 
 class CourseSync:
