@@ -137,16 +137,21 @@ class CourseSync:
         for c_code in course_info:
             c_name = course_info[c_code][0]
             c_link = course_info[c_code][1]
+            print ("Course name: " + c_name)
+            print ("Course Code: " + c_code)
+            print ("Course link: " + c_link)
             self._download_course (c_code, c_name, c_link)
 
     def _download_course (self, c_code, c_name, c_link):
         request = self.cl_session.get (c_link)
+        print (request)
         soup = BeautifulSoup(request.text)
         c_tag = None
         for tag in soup.find_all ('div'):
             if tag.has_attr('class'):
                 if "course_category_tree" in tag['class']:
                     c_tag = tag
+                    print (c_tag)
         if c_tag is not None:
             for link in c_tag.find_all ('a'):
                 if link.has_attr('class'):
