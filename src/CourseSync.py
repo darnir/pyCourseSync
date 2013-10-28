@@ -10,6 +10,7 @@ import requests
 import os
 import sys
 import argparse
+import exceptions
 from bs4 import BeautifulSoup
 from collections import defaultdict
 
@@ -32,7 +33,10 @@ def main():
         pass
     elif args.reset is True:
         pass
-    CourseSync(action="sync")
+    try:
+        CourseSync(action="sync")
+    except exceptions.ConnectionError:
+        print("Connection Error")
 
 def configure_opt_parser (parser):
     group = parser.add_mutually_exclusive_group()
@@ -80,7 +84,10 @@ class CourseSync:
 
     def guest_login(self):
         payload = {'username':'guest', 'password':'guest'}
-        cl_obj = self.cl_session.post('http://172.16.100.125/bits-cms/login/index.php', data=payload)
+        try:
+            cl_obj = self.cl_session.post('http://172.16.100.125/bits-cms/login/index.php', data=payload)
+        except requests.exceptions.ConnectionError:
+            raise exceptions.ConnectionError
         print (cl_obj.status_code)
         print (cl_obj.headers)
         print (cl_obj.cookies)
