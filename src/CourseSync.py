@@ -11,6 +11,7 @@ import os
 import sys
 import argparse
 import exceptions
+import socket
 from bs4 import BeautifulSoup
 from collections import defaultdict
 
@@ -19,6 +20,10 @@ CONF_DIR  = "Academics"
 USER_DIR  = os.path.expanduser('~')
 DIR_PATH  = os.path.join(USER_DIR, CONF_DIR)
 CONF_PATH = os.path.join(DIR_PATH, CONF_FILE)
+LOC_PATH  = "172.16.100.125"
+REM_PATH  = "111.93.5.216"
+LOC_IPNET = "172.16"
+CMS_URL   = LOC_PATH if socket.gethostbyname(socket.getfqdn())[:6] == LOC_IPNET else REM_PATH
 
 def main():
     parser = argparse.ArgumentParser()
@@ -98,10 +103,11 @@ class CourseSync:
 
     def guest_login(self):
         payload = {'username':'guest', 'password':'guest'}
-        try:
-            cl_obj = self.cl_session.post('http://172.16.100.125/bits-cms/login/index.php', data=payload)
-        except requests.exceptions.ConnectionError:
-            raise exceptions.ConnectionError
+        #try:
+        #    cl_obj = self.cl_session.post('http://%s/bits-cms/login/index.php' %(CMS_URL), data=payload)
+        #except requests.exceptions.ConnectionError:
+        #    raise exceptions.ConnectionError
+        cl_obj = self.cl_session.post('http://%s/bits-cms/login/index.php' %(CMS_URL), data=payload)
         print (cl_obj.status_code)
         print (cl_obj.headers)
         print (cl_obj.cookies)
