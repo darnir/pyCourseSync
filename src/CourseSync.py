@@ -32,14 +32,14 @@ def main():
         pass
     elif args.reset is True:
         pass
-    CourseSync(action="Sync")
+    CourseSync(action="sync")
 
 def configure_opt_parser (parser):
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-a", "--add-courses", action="store_true", help="Add courses to your Course List")
     group.add_argument("-d", "--delete-courses", action="store_true", help="Remove courses from your Course List")
     group.add_argument("-r", "--reset", action="store_true", help="Delete your Course List file and start a new one. Helpful when starting a new semester")
-    parser.add_argument("-S", "--sync", action="store_true", help="Sync your machine with the CMS Servers")
+    parser.add_argument("-S", "--sync", action="store_true", default=True, help="Sync your machine with the CMS Servers")
     parser.add_argument("-v", "--verbosity", choices=["q", "v", "d"], default="q", help="Change verbosity of script output")
     parser.add_argument("-l", "--view-logs", action="store_true", help="View the contents of your Log File")
 
@@ -47,11 +47,13 @@ def configure_opt_parser (parser):
 class CourseSync:
     def __init__(self, action="sync"):
         try:
-            getattr (self, action) ()
+            user_action = getattr(self, action)
         except Exception:
-            print ("===Error=== Method %s is not defined" %(action))
+            print("===Error=== Method %s is not defined" %(action))
+        else:
+            user_action()
 
-    def Sync (self):
+    def sync (self):
         self.cl_session = requests.Session()
         user_courses = self.get_course_list()
         cl_obj = self.guest_login()
