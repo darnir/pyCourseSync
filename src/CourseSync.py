@@ -82,6 +82,16 @@ class CourseSync:
         #TODO: Handle Course Input Here.
         sys.exit(1)
 
+    def add_courses(self):
+        conf_file = open(CONF_PATH, 'a+')
+        print("Enter course codes, one per line, in this format: BITS C312\n")
+        course_code = input ("Enter Course Code: ")
+        while course_code != '':
+            #TODO: Use Regular Expression checking for Course Code here.
+            conf_file.write(course_code + "\n")
+            course_code = input ("Enter Course Code: ")
+
+
     def guest_login(self):
         payload = {'username':'guest', 'password':'guest'}
         try:
