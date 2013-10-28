@@ -14,6 +14,7 @@ import exceptions
 import socket
 from bs4 import BeautifulSoup
 from collections import defaultdict
+from urllib.parse import urlparse
 
 CONF_FILE = "courses.lst"
 CONF_DIR  = "Academics"
@@ -183,16 +184,23 @@ class CourseSync:
         request = self.cl_session.get (class_link)
         soup = BeautifulSoup (request.text)
         print (request.url)
+        logfile = open(os.path.join(location,".log"),"a+")
+        logfile.seek(0, os.SEEK_SET)
+        existing_files = logfile.read().splitlines()
+        print(existing_files)
         tag = None
         for list_element in soup.find_all ('ul'):
             if list_element.has_attr ('class'):
                 if 'topics' in list_element['class']:
                     tag = list_element
                     for file_link in tag.find_all ('a'):
-                        file_request = self.cl_session.get (file_link.get('href'))
-                        content_disposition = file_request.headers['content-disposition'].split('=')[1].strip('"')
-                        filename = os.path.join (os.getcwd(), content_disposition)
-                        if not os.path.isfile (filename):
+                        print (file_link)
+                        file_href = file_link.get('href')
+                        f_id = urlparse(file_href).query[3:]
+                        if f_id not in existing_files:
+                            file_request = self.cl_session.get (file_href)
+                            content_disposition = file_request.headers['content-disposition'].split('=')[1].strip('"')
+                            filename = os.path.join (os.getcwd(), content_disposition)
                             fd = open (filename, "wb")
                             for block in file_request.iter_content(1024):
                                 if not block:
@@ -200,6 +208,8 @@ class CourseSync:
                                 fd.write(block)
                             fd.close()
                             print (content_disposition)
+                            logfile.write(f_id + "\n")
+        logfile.close()
         self.safe_chdir (DIR_PATH)
 
 if __name__ == '__main__':
