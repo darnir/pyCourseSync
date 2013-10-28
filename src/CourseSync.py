@@ -26,26 +26,30 @@ def main():
     args = parser.parse_args()
     print (args)
     if args.view_logs is True:
-        sys.exit (0)
+        sys.exit (10)
     elif args.add_courses is True:
-        CourseSync (action="add_courses")
+        action="add_courses"
     elif args.delete_courses is True:
-        pass
+        sys.exit (10)
     elif args.reset is True:
-        pass
+        sys.exit(10)
+    else:
+        action="sync"
+
     try:
-        CourseSync(action="sync")
+        CourseSync(action=action)
     except exceptions.ConnectionError:
         print("Connection Error")
 
 def configure_opt_parser (parser):
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("-a", "--add-courses", action="store_true", help="Add courses to your Course List")
-    group.add_argument("-d", "--delete-courses", action="store_true", help="Remove courses from your Course List")
-    group.add_argument("-r", "--reset", action="store_true", help="Delete your Course List file and start a new one. Helpful when starting a new semester")
-    parser.add_argument("-S", "--sync", action="store_true", default=True, help="Sync your machine with the CMS Servers")
+    outer_group = parser.add_mutually_exclusive_group()
+    course_group = outer_group.add_mutually_exclusive_group()
+    course_group.add_argument("-a", "--add-courses", action="store_true", help="Add courses to your Course List")
+    course_group.add_argument("-d", "--delete-courses", action="store_true", help="Remove courses from your Course List")
+    course_group.add_argument("-r", "--reset", action="store_true", help="Delete your Course List file and start a new one. Helpful when starting a new semester")
+    outer_group.add_argument("-S", "--sync", action="store_true", help="Sync your machine with the CMS Servers")
     parser.add_argument("-v", "--verbosity", choices=["q", "v", "d"], default="q", help="Change verbosity of script output")
-    parser.add_argument("-l", "--view-logs", action="store_true", help="View the contents of your Log File")
+    outer_group.add_argument("-l", "--view-logs", action="store_true", help="View the contents of your Log File")
 
 
 class CourseSync:
