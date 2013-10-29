@@ -15,6 +15,7 @@ import socket
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from urllib.parse import urlparse
+from errno import ENOENT
 
 CONF_FILE = "courses.lst"
 CONF_DIR  = "Academics"
@@ -174,9 +175,12 @@ class CourseSync:
     def safe_chdir (self, path):
         try:
             os.chdir (path)
-        except FileNotFoundError:
-            self.safe_mkdir (path)
-            os.chdir (path)
+        except OSError as ose:
+            if ose.errno == ENOENT:
+                self.safe_mkdir(path)
+                self.safe_chdir(path)
+            else:
+                print ("Unknown I/O Exception: " + ose.errno)
         except Exception as e:
             print ("Something went wrong.")
             print (e)
