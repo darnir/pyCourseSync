@@ -89,6 +89,8 @@ class CourseSync:
 
     def _create_conf_file(self, PATH):
         print ("Conf file does not exist")
+        self.safe_chdir(DIR_PATH)
+        self.add_courses()
         #TODO: Handle Course Input Here.
         sys.exit(1)
 
