@@ -11,7 +11,6 @@ import os
 import sys
 import argparse
 import exceptions
-import socket
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from urllib.parse import urlparse
@@ -22,10 +21,7 @@ CONF_DIR  = "Academics"
 USER_DIR  = os.path.expanduser('~')
 DIR_PATH  = os.path.join(USER_DIR, CONF_DIR)
 CONF_PATH = os.path.join(DIR_PATH, CONF_FILE)
-LOC_PATH  = "172.16.100.125"
-REM_PATH  = "111.93.5.216"
-LOC_IPNET = "172.16"
-CMS_URL   = LOC_PATH if socket.gethostbyname(socket.getfqdn())[:6] == LOC_IPNET else REM_PATH
+CMS_URL   = "111.93.5.216"
 
 def main():
     parser = argparse.ArgumentParser()
