@@ -27,7 +27,7 @@ def main():
     parser = argparse.ArgumentParser()
     configure_opt_parser (parser)
     args = parser.parse_args()
-    print (args)
+    #print (args)
     if args.view_logs is True:
         sys.exit (10)
     elif args.add_courses is True:
@@ -103,16 +103,12 @@ class CourseSync:
 
     def guest_login(self):
         payload = {'username':'guest', 'password':'guest'}
-        #try:
-        #    cl_obj = self.cl_session.post('http://%s/bits-cms/login/index.php' %(CMS_URL), data=payload)
-        #except requests.exceptions.ConnectionError:
-        #    raise exceptions.ConnectionError
         cl_obj = self.cl_session.post('http://%s/bits-cms/login/index.php' %(CMS_URL), data=payload)
-        print (cl_obj.status_code)
-        print (cl_obj.headers)
-        print (cl_obj.cookies)
-        print (cl_obj.url)
-        print (cl_obj.history)
+        #print (cl_obj.status_code)
+        #print (cl_obj.headers)
+        #print (cl_obj.cookies)
+        #print (cl_obj.url)
+        #print (cl_obj.history)
         return cl_obj
 
     def parseCourses(self, course_list, cl_obj):
@@ -130,7 +126,7 @@ class CourseSync:
             c_name = c_details[1][1:]
             if c_code in course_list:
                 course_info[c_code] = [c_name, link.get('href')]
-        print (course_info)
+        #print (course_info)
         return course_info
 
     def download_files (self, course_info):
@@ -139,19 +135,19 @@ class CourseSync:
             c_link = course_info[c_code][1]
             print ("Course name: " + c_name)
             print ("Course Code: " + c_code)
-            print ("Course link: " + c_link)
+            #print ("Course link: " + c_link)
             self._download_course (c_code, c_name, c_link)
 
     def _download_course (self, c_code, c_name, c_link):
         request = self.cl_session.get (c_link)
-        print (request)
+        #print (request)
         soup = BeautifulSoup(request.text)
         c_tag = None
         for tag in soup.find_all ('div'):
             if tag.has_attr('class'):
                 if "course_category_tree" in tag['class']:
                     c_tag = tag
-                    print (c_tag)
+                    #print (c_tag)
         if c_tag is not None:
             for link in c_tag.find_all ('a'):
                 if link.has_attr('class'):
@@ -185,18 +181,18 @@ class CourseSync:
         self.safe_chdir (location)
         request = self.cl_session.get (class_link)
         soup = BeautifulSoup (request.text)
-        print (request.url)
+        #print (request.url)
         logfile = open(os.path.join(location,".log"),"a+")
         logfile.seek(0, os.SEEK_SET)
         existing_files = logfile.read().splitlines()
-        print(existing_files)
+        #print(existing_files)
         tag = None
         for list_element in soup.find_all ('ul'):
             if list_element.has_attr ('class'):
                 if 'topics' in list_element['class']:
                     tag = list_element
                     for file_link in tag.find_all ('a'):
-                        print (file_link)
+                        #print (file_link)
                         file_href = file_link.get('href')
                         f_id = urlparse(file_href).query[3:]
                         if f_id not in existing_files:
