@@ -28,7 +28,8 @@ def main():
     parser = argparse.ArgumentParser()
     configure_opt_parser (parser)
     args = parser.parse_args()
-    logging.basicConfig(level=logging.DEBUG if args.verbosity == 'd' else logging.INFO if args.verbosity == 'v' else logging.CRITICAL)
+    loglevel = logging.DEBUG if args.verbosity == 'd' else logging.INFO if args.verbosity == 'v' else logging.CRITICAL
+    logging.basicConfig(level=loglevel, format='%(levelname)s:%(module)s:%(message)s')
     logging.debug(args)
     if args.view_logs is True:
         sys.exit (10)
