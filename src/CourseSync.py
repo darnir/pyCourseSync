@@ -6,15 +6,27 @@
 # License   : MIT                                                              #
 ################################################################################
 
-import requests
 import os
 import sys
 import argparse
 import exceptions
-from bs4 import BeautifulSoup
 from collections import defaultdict
 from urllib.parse import urlparse
 from errno import ENOENT
+
+try:
+    import requests
+except ImportError:
+    print("The Python Requests library for Python 3 is not installed.")
+    print("Please install Requests and try again.")
+    sys.exit(2)
+
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    print("The BeautifulSoup4 library for Python 3 is not installed.")
+    print("Please install BeautifulSoup4 and try again.")
+    sys.exit(2)
 
 CONF_FILE = "courses.lst"
 CONF_DIR  = "Academics"
