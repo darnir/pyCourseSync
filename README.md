@@ -10,11 +10,11 @@ pyCourseSync uses some of the best libraries available for Python 3 to
  accomplish the task.
 
 The libraries required for pyCourseSync to work are:
-    * BeautifulSoup4: This is an absolutely amazing library for parsing and
-      navigating Web Pages.
-    * Requests: This stunningly simple library was chosen over the built-in
-      urllib library after a lot of consideration. It provides the simplest and
-      easiest HTTP Client API I have ever seen.
+   * BeautifulSoup4: This is an absolutely amazing library for parsing and
+     navigating Web Pages.
+   * Requests: This stunningly simple library was chosen over the built-in
+     urllib library after a lot of consideration. It provides the simplest and
+     easiest HTTP Client API I have ever seen.
 
 Usage
 =====
@@ -54,4 +54,4 @@ This was the inspiration based on which pyCourseSync is written.
 Authors
 =======
 
-    * Darshit Shah  <darnir@gmail.com>
+   * Darshit Shah  <darnir@gmail.com>
