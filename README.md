@@ -55,3 +55,7 @@ Authors
 =======
 
    * Darshit Shah  <darnir@gmail.com>
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/darnir/pycoursesync/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
