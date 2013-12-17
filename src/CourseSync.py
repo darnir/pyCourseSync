@@ -10,9 +10,11 @@ import os
 import sys
 import argparse
 import exceptions
+import re
 from collections import defaultdict
 from urllib.parse import urlparse
 from errno import ENOENT
+
 
 try:
     import requests
@@ -108,10 +110,11 @@ class CourseSync:
         print("Enter course codes, one per line, in this format: BITS C312\n")
         course_code = input ("Enter Course Code: ")
         while course_code != '':
-            #TODO: Use Regular Expression checking for Course Code here.
-            conf_file.write(course_code + "\n")
-            course_code = input ("Enter Course Code: ")
-
+            if (check_code(course_code)):
+                conf_file.write(course_code + "\n")
+                course_code = input ("Enter Course Code: ")
+            else:
+                print("Invalid Course Code")
 
     def guest_login(self):
         payload = {'username':'guest', 'password':'guest'}
@@ -221,6 +224,15 @@ class CourseSync:
                             logfile.write(f_id + "\n")
         logfile.close()
         self.safe_chdir (DIR_PATH)
+
+    def check_code(code):
+        #course_tags='[BITS,AAOC,BIO,CS,CHEM,CDP,CE,CHE,DA,DE,ECE,ECON,EEE,FIN,HSS,IS,INSTR,MATH,ME,MEL,MF,PHA,PHY,POL,SOC,TA]'
+        #pattern = '{} [F,G,C][0-9]'.format(course_tags)
+        pattern = '^([A-Z]{2,5}) [(A-Z)*1]([0-9]{3}$)'
+        if(re.search(pattern,code)):
+            return True
+        else:
+            return False
 
 if __name__ == '__main__':
     main()
