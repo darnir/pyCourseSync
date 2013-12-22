@@ -55,6 +55,7 @@ Authors
 =======
 
    * Darshit Shah  <darnir@gmail.com>
+   * jennystone  <jenny.stone23@gmail.com>
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/darnir/pycoursesync/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
