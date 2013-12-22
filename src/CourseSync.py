@@ -39,6 +39,7 @@ except ImportError:
 
 CONF_FILE = "courses.lst"
 CONF_DIR  = "Academics"
+LOG_NAME  = ".log"
 USER_DIR  = os.path.expanduser('~')
 DIR_PATH  = os.path.join(USER_DIR, CONF_DIR)
 CONF_PATH = os.path.join(DIR_PATH, CONF_FILE)
@@ -323,9 +324,9 @@ class CourseSync(object):
         request = self.cl_session.get(class_link)
         soup = BeautifulSoup(request.text)
         #print (request.url)
-        logfile = open(os.path.join(location, ".log"), "a+")
+        logfile = open(os.path.join(location, LOG_NAME), "a+")
         logfile.seek(0, os.SEEK_SET)
-        existing_files = logfile.read().splitlines()
+        existing_files = self._gen_existing_files(logfile)
         #print(existing_files)
         tag = None
         for list_element in soup.find_all('ul'):
@@ -337,19 +338,8 @@ class CourseSync(object):
                         file_href = file_link.get('href')
                         f_id = urlparse(file_href).query[3:]
                         if f_id not in existing_files:
-                            file_request = self.cl_session.get(file_href)
-                            cd = file_request.headers['content-disposition']
-                            content_disposition = cd.split('=')[1].strip('"')
-                            filename = os.path.join(
-                                os.getcwd(), content_disposition)
-                            fd = open(filename, "wb")
-                            for block in file_request.iter_content(1024):
-                                if not block:
-                                    break
-                                fd.write(block)
-                            fd.close()
-                            print(content_disposition)
-                            logfile.write(f_id + "\n")
+                            f_name = self._download_one_file(file_href)
+                            logfile.write(f_id + ":" + f_name + ":" + "\n")
         logfile.close()
         safe_chdir(DIR_PATH)
 
@@ -367,6 +357,37 @@ class CourseSync(object):
         else:
             return False
 
+    def _gen_existing_files(self, logfile):
+        """
+        Generates and returns a dictionary of the file id and filename of all
+        the files already existing on disk. This is used to ensure that
+        previously downloaded files are not downloaded again, hence saving
+        precious bandwidth.
+        """
+        ext_files = dict()
+        for line in logfile:
+            f_details = line.split(':')
+            ext_files[f_details[0]] = f_details[2]
+        return ext_files
+
+    def _download_one_file(self, file_link):
+        """
+        Downloads a single file that exists at the link provided.
+        """
+        file_request = self.cl_session.get(file_link)
+        cd_name = file_request.headers['content-disposition']
+        content_disposition = cd_name.split('=')[1].strip('"')
+        filename = os.path.join(os.getcwd(), content_disposition)
+        fd = open(filename, 'wb')
+        for block in file_request.iter_content(1024):
+            if not block:
+                break
+            fd.write(block)
+        fd.close()
+        print(content_disposition)
+        return content_disposition
+
+
 if __name__ == '__main__':
     main()
-# vim: set ts=4 sts=4 sw=4 tw=300 et :
+# vim: set ts=4 sts=4 sw=4 tw=79 et :
