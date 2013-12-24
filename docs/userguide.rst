@@ -1,0 +1,5 @@
+.. highlight:: bash
+
+User Guide
+==========
+
