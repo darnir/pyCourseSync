@@ -1,4 +1,4 @@
-from distutils.coe import setup
+from distutils.core import setup
 
 setup(
     name = 'pyCourseSync',
