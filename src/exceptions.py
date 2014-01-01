@@ -5,3 +5,7 @@ class ConnectionError(BaseException):
 class NotImplemented(BaseException):
     def __init__(self):
         pass
+
+class ServerDown(BaseException):
+    def __init__(self):
+        pass

@@ -74,6 +74,8 @@ def main():
         CourseSync(action=action)
     except exceptions.ConnectionError:
         print("Connection Error")
+    except exceptions.ServerDown:
+        print("The CMS has changed. Page did not parse correctly.")
 
 
 def configure_opt_parser(parser):
@@ -264,12 +266,15 @@ class CourseSync(object):
             if tag.has_attr('class'):
                 if "subcategories" in tag['class']:
                     div_tag = tag
-        for link in div_tag.find_all('a'):
-            c_details = link.text.split('-')
-            c_code = c_details[0][:-1]
-            c_name = c_details[1][1:]
-            if c_code in course_list:
-                course_info[c_code] = [c_name, link.get('href')]
+        if div_tag is not None:
+            for link in div_tag.find_all('a'):
+                c_details = link.text.split('-')
+                c_code = c_details[0][:-1]
+                c_name = c_details[1][1:]
+                if c_code in course_list:
+                    course_info[c_code] = [c_name, link.get('href')]
+        else:
+            raise exceptions.ServerDown()
         #print (course_info)
         return course_info
 
