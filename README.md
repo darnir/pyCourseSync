@@ -3,6 +3,12 @@ pyCourseSync
 
 A clone of the original CourseSync client written in Python 3.
 
+*DEPRECATED* This Module has now been deprecated. The CMS changed since Semester
+2, AY 2013-14 and the original author is no longer on campus. Since no one is
+interested in maintaining this module, I am closing it down. However, in the
+future if anyone wishes to fix it and extend it, please fork it and maintain
+your own copy. I will be accepting no more pull requests.
+
 Dependencies
 ============
 
